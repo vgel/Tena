@@ -1,0 +1,15 @@
+package r194.parsing;
+
+public enum ASTType {
+	PROGRAM,
+	INSTRUCTION,
+	ARGUMENT_LIST,
+	NUMBER,
+	LABEL,
+	IDENT,
+	MACRO,
+	BLOCK,
+	MACRO_CALL,
+	INDIRECT_ADDR,
+	INDIR_OP
+}
