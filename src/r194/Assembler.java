@@ -19,25 +19,27 @@ public class Assembler {
 				}
 			}
 		});
-		Logging.setupLogging(true);
 		Map<String, String> args = parseArgs(sargs);
+		System.out.println(args);
 		String filename = args.get("-in");
 		String outname = args.get("-out");
 		String type = args.get("-f");
+		Logging.setupLogging(args.containsKey("-debug"));
 		if (filename == null || outname == null || args.isEmpty() || args.containsKey("-help") || args.containsKey("-h")
 				|| args.containsKey("--help")) {
-			Logging.message("0x10^c Assembler by Jonathon \"Rotten194\" Vogel");
-			Logging.message("----------------------------------------------  ");
-			Logging.message("This assembler compiles a custom dialect of     ");
-			Logging.message("DCPU-16 assembly to standard DCPU-16 bytecode.  ");
-			Logging.message("                                                ");
-			Logging.message("You can see the README for the syntax breakdown.");
-			Logging.message("                                                ");
-			Logging.message("Command line arguments:                         ");
-			Logging.message("-in: the file to parse                          ");
-			Logging.message("-out: the file to write to (WILL OVERWRITE!)    ");
-			Logging.message("-f: the output type (bin, asm, or both)         ");
-			Logging.message("-help/--help: display this message              ");
+			Logging.message("0x10^c Assembler (Tena for short) by Jonathon \"Rotten194\" Vogel");
+			Logging.message("-----------------------------------------------------------------");
+			Logging.message("This assembler compiles a custom dialect of                      ");
+			Logging.message("DCPU-16 assembly to standard DCPU-16 bytecode.                   ");
+			Logging.message("                                                                 ");
+			Logging.message("You can see the README for the syntax breakdown.                 ");
+			Logging.message("                                                                 ");
+			Logging.message("Command line arguments:                                          ");
+			Logging.message("-in: the file to parse                                           ");
+			Logging.message("-out: the file to write to (WILL OVERWRITE!)                     ");
+			Logging.message("-f: the output type (bin, asm, or both)                          ");
+			Logging.message("-debug: get tons of debugging output (including AST dumps)       ");
+			Logging.message("-help/--help: display this message                               ");
 			System.exit(0);
 		}
 
@@ -66,6 +68,7 @@ public class Assembler {
 		else {
 			Logging.error("Unrecognized format " + type);
 		}
+		Logging.message("Done!");
 	}
 
 	private static String loadFile(String filename) {
@@ -109,6 +112,9 @@ public class Assembler {
 					argName = null;
 				}
 			}
+		}
+		if (argName != null){
+			ret.put(argName, null); //clean up if we left a flagg
 		}
 
 		return ret;
