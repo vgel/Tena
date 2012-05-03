@@ -9,7 +9,7 @@ enum Token {
 	OPEN_MULTILINE_COMMENT("/\\*"),
 	CLOSE_MULTILINE_COMMENT("\\*/"),
 	WHITESPACE("\\s"),
-	DECLMACRO("#"),
+	DIRECTIVE("#"),
 	NUMBER("[0-9]+"),
 	HEXNUMBER("0x[a-fA-F0-9]*"),
 	OCTNUMBER("o[0-7]+"),

@@ -46,7 +46,7 @@ into this:
     7861 001e 7c62 9000 3811 801c 7dc1 001d
     80e1 85e2 001e bde9 001e 1981 0020 0000
 
-(note this program will not do much, you'll need an emulator with keyboard buffer support (NOT the DCPU Studio default mode) and register views)
+(note this program will not do much, you'll need an emulator with keyboard buffer support (NOT the DCPU Studio default mode) and register views, and you'll need to enclose the reading macros in a loop)
 
 It can also correctly compile the example program in the DCPU specs and will attempt to use short-form literals for non-label values (labels need to be fixed up after code generation so are too complicated to make short-form).
 

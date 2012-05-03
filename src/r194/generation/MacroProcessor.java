@@ -14,12 +14,28 @@ public class MacroProcessor {
 	}
 
 	public AbstractSyntaxNode expandMacros(AbstractSyntaxNode root) {
-		for (AbstractSyntaxNode node : root.filter(ASTType.MACRO)) {
-			String macroName = (String) node.child(0).content;
-			macros.put(macroName, node);
+		for (AbstractSyntaxNode node : root.filter(ASTType.DIRECTIVE)) {
+			switch((String)node.content){
+			case "macro":
+				processMacro(node);
+				break;
+			case "include":
+			case "incbin":
+			case "org":
+				Logging.error("source file/binary file includes/org directives not yet supported!");
+				break;
+			}
 		}
 
 		return expandMacrosImpl(root);
+	}
+	
+	public void processMacro(AbstractSyntaxNode node){
+		if (node.numChildren() < 2 || node.numChildren() > 3 || node.child(0).type != ASTType.IDENT){
+			Logging.error("Syntax error for macro " + (node.numChildren() > 0 ? node.child(0).content : "unknown") + "\n" + node);
+		}
+		String macroName = (String) node.child(0).content;
+		macros.put(macroName, node);
 	}
 
 	private AbstractSyntaxNode expandMacrosImpl(AbstractSyntaxNode expand) {
@@ -29,7 +45,7 @@ public class MacroProcessor {
 		for (AbstractSyntaxNode node : expand) {
 			if (node.type == ASTType.MACRO_CALL) {
 				ret.addChildren(expandMacroCall(node));
-			} else if (node.type != ASTType.MACRO) {
+			} else if (node.type != ASTType.DIRECTIVE) {
 				ret.addChild(expandMacrosImpl(node));
 			}
 		}

@@ -7,7 +7,7 @@ public enum ASTType {
 	NUMBER,
 	LABEL,
 	IDENT,
-	MACRO,
+	DIRECTIVE,
 	BLOCK,
 	MACRO_CALL,
 	INDIRECT_ADDR,

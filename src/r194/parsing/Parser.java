@@ -67,7 +67,7 @@ public class Parser {
 	public AbstractSyntaxNode program() {
 		AbstractSyntaxNode root = new AbstractSyntaxNode(ASTType.PROGRAM, null, null);
 		filterTokens();
-		while (macro(root) || topLevelThing(root)){}
+		while (directive(root) || topLevelThing(root)){}
 		if (!accept(Token.EOF)){
 			Logging.debug(tokens);
 			Logging.debug(lookahead(0));
@@ -77,12 +77,12 @@ public class Parser {
 		return root;
 	}
 	
-	public boolean macro(AbstractSyntaxNode node){
-		if (accept(Token.DECLMACRO) && lookahead(0).getMatched().equals("macro")){
-			expect(Token.IDENT); //"macro"
-			AbstractSyntaxNode macro = node.addChild(ASTType.MACRO, null);
-			expect(Token.IDENT);
-			macro.addChild(ASTType.IDENT, lookahead(-1).getMatched());
+	public boolean directive(AbstractSyntaxNode node){
+		if (accept(Token.DIRECTIVE) && accept(Token.IDENT)){
+			AbstractSyntaxNode macro = node.addChild(ASTType.DIRECTIVE, lookahead(-1).getMatched()); //content = "macro"/"incbin"/etc.
+			if (accept(Token.IDENT)){
+				macro.addChild(ASTType.IDENT, lookahead(-1).getMatched()); //macro name, if there, otherwise it's an incbin or similar
+			}
 			expect(Token.LPAREN);
 			AbstractSyntaxNode arglist = macro.addChild(ASTType.ARGUMENT_LIST, null);
 			if (accept(Token.IDENT)){
@@ -93,7 +93,7 @@ public class Parser {
 				}
 			}
 			expect(Token.RPAREN);
-			expect(macroBlock(macro), "Expected block after macro!");
+			macroBlock(macro);
 			return true;
 		}
 		return false;
