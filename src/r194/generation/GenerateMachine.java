@@ -9,9 +9,11 @@ import r194.parsing.*;
 
 public class GenerateMachine extends Generate {
 	static final String[] basic = 
-		{ null, "set", "add", "sub", "mul", "div", "mod", "shl", "shr", "and", "bor", "xor", "ife", "ifn", "ifg", "ifb" };
+		{  null, "set", "add", "sub", "mul", "mli", "div", "dvi", "mod", "and", "bor", "xor", "shr", "asr", "shl", "sti",
+		  "ifb", "ifc", "ife", "ifn", "ifg", "ifa", "ifl", "ifu",  null,  null, "adx", "sbx",  null,  null,  null,  null };
 	static final String[] extended = 
-		{ null, "jsr" };
+		{  null, "jsr",  null,  null,  null,  null,  null, "hcf", "int", "iag", "ias",  null,  null,  null,  null,  null,
+		  "hwn", "hwq", "hwi",  null,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null };
 	
 	static final String[] other = 
 		{ "dat" };
