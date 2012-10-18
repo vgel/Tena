@@ -1,0 +1,3 @@
+set PC, 1
+:1
+	SUB PC, 1

@@ -1,0 +1,59 @@
+SET PC, init
+
+
+:display DAT 0xFFFF
+:keyboard DAT 0xFFFF
+:clock DAT 0xFFFF
+
+
+
+:check_device
+
+IFE B, 0x12d0
+SET [clock], J
+IFE B, 0x7349
+SET [display], J
+IFE B, 0x30cf
+SET [keyboard], J
+SET PC, POP
+
+
+:init
+HWN I
+SET J, 0
+
+:device_loop
+HWQ J
+JSR check_device
+IFE I, J
+SET PC, main
+ADD J, 1
+SET PC, device_loop
+
+:drawChar
+SET A, 0
+SET B, 0x8000
+SET J, B
+ADD J, X
+MUL Y, 32
+ADD J, Y
+ADD C, 0x0f00
+SET [J], C
+HWI [display]
+SET PC, POP
+
+:drawKey
+JSR drawChar
+ADD X, 1
+SET PC, POP
+
+:main
+SET X,0
+SET Y,0
+
+:input_loop
+SET A, 1
+HWI [keyboard]
+IFG C, 0
+JSR drawKey
+SET PC, input_loop ;LOOPS :D
