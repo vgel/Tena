@@ -1,3 +1,6 @@
-bin/
 .*
 !.gitignore
+*.jar
+*.bin
+*.asm #output from -out both, test files are .dasm
+bin/
