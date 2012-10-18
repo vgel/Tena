@@ -104,7 +104,7 @@ public class GenerateMachine extends Generate {
 			handleBasicInstruction(ins, a, b);
 		}
 		else if (s == 0){
-			Logging.debug("GIMME MY DAMN JSR");
+			Logging.debug("found jsr or other extended");
 			s = extendedInstructionCode(ins);
 			if (s > 0){
 				if (instruction.child(1).numChildren() > 1)
@@ -115,9 +115,15 @@ public class GenerateMachine extends Generate {
 				if (isOther(ins)){
 					handleOther(ins, getArg(instruction.child(1).child(0), 1, false));
 				}
+				else {
+					Logging.error("Unknown instruction " + ins);
+				}
 			}
 		}
-		Logging.debug("Wrote " + (code.length - oldLen) + " bytes");
+		Logging.debug("Wrote " + (code.length - oldLen) + " bytes for " + ins);
+		Logging.debug("code now length " + code.length + " (" + Integer.toHexString(code.length) + ")");
+		//Logging.debug(instruction);
+		Logging.debug(Integer.toHexString(code.get(code.length - 1)));
 	}
 	
 	void handleBasicInstruction(String ins, ArgResult a, ArgResult b){
@@ -126,11 +132,11 @@ public class GenerateMachine extends Generate {
 			Logging.error("Invalid instruction " + ins);
 		}
 		
-		final int sixBitMask = 0x3f;
-		final int fourBitMask = 0xf;
-		int result = opcode & fourBitMask;
-		result |= ((a.a & sixBitMask) << 4);
-		result |= ((b.a & sixBitMask) << 10);
+		final int fiveBitMask = 31;
+		final int sixBitMask = 63;
+		int result = opcode & fiveBitMask;
+		result |= ((b.a & fiveBitMask) << 4);
+		result |= ((a.a & sixBitMask) << 10);
 		code.add(result);
 		if (a.useb) code.add(a.b);
 		if (b.useb) code.add(b.b);
@@ -153,7 +159,12 @@ public class GenerateMachine extends Generate {
 	
 	void handleOther(String ins, ArgResult a){
 		if (ins.equalsIgnoreCase("dat")){
-			code.add(a.a);
+			Logging.debug("dat " + Integer.toHexString(a.a) + ", " + a.b);
+			if (a.useb)
+				code.add(a.b);
+			else
+				code.add(a.a);
+			Logging.debug("datres" + code.get(code.length - 1));
 			return;
 		}
 		else {
@@ -173,12 +184,13 @@ public class GenerateMachine extends Generate {
 			case "z": return new ArgResult(0x05);
 			case "i": return new ArgResult(0x06);
 			case "j": return new ArgResult(0x07);
+			case "push": //should probably add some checking so POP can only be in a and PUSH can only be in b, but eh.s
 			case "pop": return new ArgResult(0x18);
 			case "peek": return new ArgResult(0x19);
-			case "push": return new ArgResult(0x1a);
+			case "pick": return new ArgResult(0x1a);
 			case "sp": return new ArgResult(0x1b);
 			case "pc": return new ArgResult(0x1c);
-			case "o": return new ArgResult(0x1d);
+			case "ex": return new ArgResult(0x1d);
 			}
 			//assume it's a label
 			int offset = 1;
