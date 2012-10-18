@@ -165,7 +165,8 @@ public class Parser {
 		if (lookahead(0).type == Token.COLON){
 			AbstractSyntaxNode labeldecl = node.addChild(ASTType.LABEL, null);
 			expect(Token.COLON);
-			expect(Token.IDENT);
+			if (!accept(Token.IDENT) || !accept(Token.NUMBER))
+				Logging.error("Syntax error: found " + lookahead(0) + ", expected NUMBER or IDENT");
 			labeldecl.addChild(ASTType.IDENT, lookahead(-1).getMatched());
 			return true;
 		}
@@ -173,14 +174,15 @@ public class Parser {
 	}
 	
 	public boolean atom(AbstractSyntaxNode node){
-		Logging.debug("Startatom");
 		if (accept(Token.HEXNUMBER)){
 			String hex = lookahead(-1).getMatched();
+			Logging.debug("HEX " + hex);
 			if (hex.length() == 2){
 				node.addChild(ASTType.NUMBER, "0");
 				return true;
 			}
 			hex = hex.substring(2);
+			Logging.debug("HEX2 " + hex + "=" + Integer.parseInt(hex, 16));
 			node.addChild(ASTType.NUMBER, "" + Integer.parseInt(hex, 16));
 			return true;
 		}
