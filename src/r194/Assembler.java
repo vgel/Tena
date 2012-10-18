@@ -20,11 +20,12 @@ public class Assembler {
 			}
 		});
 		Map<String, String> args = parseArgs(sargs);
-		System.out.println(args);
+		//System.out.println(args);
 		String filename = args.get("-in");
 		String outname = args.get("-out");
 		String type = args.get("-f");
 		Logging.setupLogging(args.containsKey("-debug"));
+		Logging.debug(args);
 		if (filename == null || outname == null || args.isEmpty() || args.containsKey("-help") || args.containsKey("-h")
 				|| args.containsKey("--help")) {
 			Logging.message("0x10^c Assembler (Tena for short) by Jonathon \"Rotten194\" Vogel");
